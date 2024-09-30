@@ -52,6 +52,10 @@ on:
         description: Runner label for version
         type: string
         default: runner-0.0.19
+      pytorch_nightly_wheels:
+        description: Use PyTorch nightly wheels
+        type: boolean
+        default: true
 
 permissions: read-all
 
@@ -92,10 +96,16 @@ jobs:
           python-version: ${{ inputs.python_version }}
 
       - name: Setup PyTorch
+        if: ${{ !inputs.pytorch_nightly_wheels }}
         uses: ./.github/actions/setup-pytorch
         with:
           repository: pytorch/pytorch
           ref: ${{ inputs.pytorch_ref }}
+
+      - name: Setup PyTorch
+        if: ${{ inputs.pytorch_nightly_wheels }}
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/nightly/xpu
 
       - name: Install pass_rate dependencies
         run: |
