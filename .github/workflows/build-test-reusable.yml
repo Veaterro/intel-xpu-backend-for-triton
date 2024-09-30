@@ -107,6 +107,15 @@ jobs:
         run: |
           pip install torch --index-url https://download.pytorch.org/whl/nightly/xpu
 
+      - name: Setup PyTorch
+        if: ${{ inputs.pytorch_nightly_wheels }}
+        uses: actions/checkout@v4
+        with:
+          repository: pytorch/pytorch
+          ref: ${{ inputs.pytorch_ref }}
+          submodules: recursive
+          path: pytorch
+
       - name: Install pass_rate dependencies
         run: |
           pip install defusedxml
